@@ -8,7 +8,10 @@
       "Bash(xargs wc:*)",
       "Bash(wc -l /d/sources/LiteMonitor/src/**/*.cs)",
       "Bash(ls /d/sources/LiteMonitor/resources/plugins/*.json)",
-      "Bash(find /d/sources/LiteMonitor -name \"*.cs\" -exec grep -l \"Main\\\\|Entry\\\\|Application\" {})"
+      "Bash(find /d/sources/LiteMonitor -name \"*.cs\" -exec grep -l \"Main\\\\|Entry\\\\|Application\" {})",
+      "Bash(grep -n \"ActivateWindow\\\\|SetForegroundWindow\\\\|BringToFront\" d:/sources/LiteMonitor/src/UI/Helpers/*.cs)",
+      "Bash(dotnet --list-sdks)",
+      "Bash(winget install:*)"
     ]
   }
 }
