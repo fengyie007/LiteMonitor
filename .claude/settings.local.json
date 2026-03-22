@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /d/sources/LiteMonitor -name *.md -o -name .cursorrules -o -name *.yml -o -name *.yaml)",
+      "Bash(git -C /d/sources/LiteMonitor log --oneline -20)",
+      "Bash(find /d/sources/LiteMonitor -type f \\\\\\(-name .cursorrules -o -name .cursor* \\\\\\))",
+      "Bash(find /d/sources/LiteMonitor -name *.yml -o -name *.yaml -o -name .gitignore)",
+      "Bash(xargs wc:*)",
+      "Bash(wc -l /d/sources/LiteMonitor/src/**/*.cs)",
+      "Bash(ls /d/sources/LiteMonitor/resources/plugins/*.json)",
+      "Bash(find /d/sources/LiteMonitor -name \"*.cs\" -exec grep -l \"Main\\\\|Entry\\\\|Application\" {})"
+    ]
+  }
+}
