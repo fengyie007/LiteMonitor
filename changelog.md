@@ -17,3 +17,5 @@
 **修改文件：**
 - `src/UI/Helpers/MainFormWinHelper.cs` — 新增 `ReapplyTopMost()` 方法及相关 Win32 API 声明
 - `src/UI/MainForm_Transparent.cs` — 新增置顶守护定时器，替换启动时的一次性 toggle hack
+
+dotnet publish -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true
