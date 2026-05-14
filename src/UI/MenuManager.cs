@@ -406,6 +406,26 @@ namespace LiteMonitor
             menu.Items.Add(speedWindow);
 
 
+            // 监控历史 (独立窗口，轻量自绘)
+            var trendItem = new ToolStripMenuItem(LanguageManager.T("Menu.MonitorHistory"));
+            trendItem.Image = Properties.Resources.MonitorHistory;
+            trendItem.Click += (_, __) =>
+            {
+                foreach (Form openForm in Application.OpenForms)
+                {
+                    if (openForm is HardwareTrendForm)
+                    {
+                        openForm.Activate();
+                        return;
+                    }
+                }
+
+                var trendForm = new HardwareTrendForm(cfg);
+                trendForm.Show();
+            };
+            menu.Items.Add(trendItem);
+
+
             // 历史流量统计 (独立窗口，保持原样)
             var trafficItem = new ToolStripMenuItem(LanguageManager.T("Menu.Traffic"));
             trafficItem.Image = Properties.Resources.TrafficIcon;

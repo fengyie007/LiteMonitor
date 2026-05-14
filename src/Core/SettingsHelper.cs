@@ -12,6 +12,9 @@ namespace LiteMonitor
     {
         // Cache path
         private static readonly string _cachedPath = Path.Combine(AppContext.BaseDirectory, "settings.json");
+        private static readonly string _backupPath = Path.Combine(AppContext.BaseDirectory, "settings.json.bak");
+        private static readonly string _tempPath = Path.Combine(AppContext.BaseDirectory, "settings.json.tmp");
+        private static readonly object _ioLock = new object();
         public static string FilePath => _cachedPath;
 
         // Global block save lock
@@ -22,19 +25,11 @@ namespace LiteMonitor
             // Note: The singleton instance management is kept in Settings.Load() facade
             // or handled by the caller. This method strictly loads from disk/creates default.
             
-            Settings s = new Settings();
-            try
+            Settings s;
+            lock (_ioLock)
             {
-                if (File.Exists(FilePath))
-                {
-                    var json = File.ReadAllText(FilePath);
-                    s = JsonSerializer.Deserialize<Settings>(json, new JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true
-                    }) ?? new Settings();
-                }
+                s = TryLoadFile(FilePath) ?? TryLoadFile(_backupPath) ?? new Settings();
             }
-            catch { }
 
             if (s.GroupAliases == null) s.GroupAliases = new Dictionary<string, string>();
 
@@ -88,9 +83,74 @@ namespace LiteMonitor
             try
             {
                 var json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
-                File.WriteAllText(FilePath, json);
+                lock (_ioLock)
+                {
+                    AtomicWrite(json);
+                }
+            }
+            catch
+            {
+                CleanupTempFile();
+            }
+        }
+
+        public static void DeleteStoredSettings()
+        {
+            lock (_ioLock)
+            {
+                DeleteFileIfExists(FilePath);
+                DeleteFileIfExists(_backupPath);
+                DeleteFileIfExists(_tempPath);
+            }
+        }
+
+        private static Settings? TryLoadFile(string path)
+        {
+            try
+            {
+                if (!File.Exists(path)) return null;
+
+                var json = File.ReadAllText(path);
+                return JsonSerializer.Deserialize<Settings>(json, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static void AtomicWrite(string json)
+        {
+            string? dir = Path.GetDirectoryName(FilePath);
+            if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+
+            File.WriteAllText(_tempPath, json);
+
+            if (File.Exists(FilePath))
+            {
+                try { File.Copy(FilePath, _backupPath, true); }
+                catch { }
+            }
+
+            File.Move(_tempPath, FilePath, true);
+        }
+
+        private static void CleanupTempFile()
+        {
+            try
+            {
+                if (File.Exists(_tempPath)) File.Delete(_tempPath);
             }
             catch { }
+        }
+
+        private static void DeleteFileIfExists(string path)
+        {
+            if (File.Exists(path)) File.Delete(path);
         }
 
         public static void InitDefaultItems(this Settings settings)

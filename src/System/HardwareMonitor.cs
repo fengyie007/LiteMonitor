@@ -75,7 +75,7 @@ namespace LiteMonitor.src.SystemServices
                 IsMotherboardEnabled = true,
                 
                 // ★★★ 优化 T0：动态开启控制器扫描 ★★★
-                // 默认关闭以避免 USB 冲突，仅当需要风扇/水泵/主板温度时开启
+                // 默认关闭以避免 USB 冲突，仅当需要风扇/水泵时开启
                 IsControllerEnabled = ShouldEnableController(), 
 
                 // 开启电池监控
@@ -314,7 +314,7 @@ namespace LiteMonitor.src.SystemServices
                         // LHM 打开双 Nvidia 显卡时可能很慢。启动阶段 Get() 已改走性能计数器兜底，
                         // 这里继续加锁只会让设置页等硬件树稳定，不会拖住 CPU/MEM/DISK 首屏数据。
                         _computer.Open();
-                        WarmUpValueDependentSensors();
+                        WarmUpMotherboardSensors();
 
                         // 先建立映射，再由正常刷新循环更新数值，避免启动时预热所有 GPU 拖慢 CPU/MEM 展示。
                         _sensorMap.Rebuild(_computer, _cfg);
@@ -354,29 +354,21 @@ namespace LiteMonitor.src.SystemServices
         // ★★★ [新增] 动态判断是否需要开启控制器 ★★★
         private bool ShouldEnableController()
         {
-            // 检查是否开启了任何需要读取 SuperIO/USB 控制器的监控项
-            // 通常是风扇、水泵、主板温度
+            // 检查是否开启了任何需要读取外部控制器的监控项。
+            // 主板温度走 Motherboard/SuperIO 硬件树，不应该因此打开 Controller 扫描。
             if (_cfg.IsAnyEnabled("CPU.Fan")) return true;
             if (_cfg.IsAnyEnabled("CPU.Pump")) return true;
             if (_cfg.IsAnyEnabled("CASE.Fan")) return true;
-            // 注意：MOBO.Temp 有些可能通过 WMI 读取，不一定需要 Controller，但为了保险起见，如果开了 MOBO 也开启
-            // if (_cfg.IsAnyEnabled("MOBO")) return true; 
             return false;
         }
 
-        private void WarmUpValueDependentSensors()
+        private void WarmUpMotherboardSensors()
         {
-            bool needMoboValue =
-                _cfg.IsAnyEnabled("MOBO") ||
-                _cfg.IsAnyEnabled("CPU.Fan") ||
-                _cfg.IsAnyEnabled("CPU.Pump") ||
-                _cfg.IsAnyEnabled("CASE.Fan");
-
-            if (!needMoboValue) return;
-
+            // 主板硬件树本来就是常开。启动时预热一次，保证主板温度即使暂未显示，
+            // 也能在 SensorMap.Rebuild 阶段完成有效映射，后续打开显示项可直接读缓存。
             foreach (var hw in _computer.Hardware)
             {
-                if (IsMoboOrCooler(hw))
+                if (IsMotherboardSensorHardware(hw))
                 {
                     try { UpdateWithSubHardware(hw); }
                     catch { }
@@ -482,6 +474,7 @@ namespace LiteMonitor.src.SystemServices
                     }
                     
                     _computer.Open();
+                    WarmUpMotherboardSensors();
 
                     DisableSensorHistory();
                 }
@@ -534,6 +527,12 @@ namespace LiteMonitor.src.SystemServices
             return hw.HardwareType == HardwareType.Motherboard || 
                    hw.HardwareType == HardwareType.SuperIO || 
                    hw.HardwareType == HardwareType.Cooler;
+        }
+
+        private static bool IsMotherboardSensorHardware(IHardware hw)
+        {
+            return hw.HardwareType == HardwareType.Motherboard ||
+                   hw.HardwareType == HardwareType.SuperIO;
         }
         #endregion
 

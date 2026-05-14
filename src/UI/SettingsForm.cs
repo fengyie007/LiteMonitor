@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
 using LiteMonitor.src.Core;
 using LiteMonitor.src.Core.Actions;
@@ -116,8 +115,7 @@ namespace LiteMonitor.src.UI
                     try 
                     {
                         Settings.GlobalBlockSave = true;
-                        var path = Path.Combine(AppContext.BaseDirectory, "settings.json");
-                        if (File.Exists(path)) File.Delete(path);
+                        SettingsHelper.DeleteStoredSettings();
                         Application.Restart();
                         Environment.Exit(0);
                     }
