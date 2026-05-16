@@ -219,7 +219,6 @@ namespace LiteMonitor.src.UI.Helpers
 
         public const uint MSGFLT_ADD = 1;
         private static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
-        private static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
         private static readonly IntPtr HWND_NOTOPMOST = new IntPtr(-2);
         private const uint SWP_NOSIZE = 0x0001;
         private const uint SWP_NOMOVE = 0x0002;
@@ -230,7 +229,6 @@ namespace LiteMonitor.src.UI.Helpers
         private const int DWMWA_BORDER_COLOR = 34;
         private const int DWMWA_COLOR_NONE = unchecked((int)0xFFFFFFFE);
         private const int GWL_EXSTYLE = -20;
-        private const int WS_EX_TOPMOST = 0x00000008;
         private const int WS_EX_TRANSPARENT = 0x20;
         private const int WS_EX_LAYERED = 0x80000;
         private const int WS_EX_TOPMOST = 0x00000008;
