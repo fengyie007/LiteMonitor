@@ -1,0 +1,63 @@
+{
+  "Name": "MinimalDarkFlat v2.0",
+  "Version": 3,
+  "Layout": {
+    "Width": 240,
+    "LayoutScale": 1,
+    "RowHeight": 18,
+    "Padding": 2,
+    "CornerRadius": 4,
+    "GroupRadius": 2,
+    "GroupPadding": 0,
+    "GroupSpacing": 8,
+    "GroupBottom": 0,
+    "ItemGap": 0,
+    "GroupTitleOffset": 0
+  },
+  "Font": {
+    "Family": "Microsoft YaHei UI Light",
+    "ValueFamily": "\u5FAE\u8F6F\u96C5\u9ED1 Light",
+    "Title": 8,
+    "Group": 8,
+    "Item": 7,
+    "Value": 7,
+    "Bold": false,
+    "ItemSize": 0
+  },
+  "Thresholds": {
+    "Load": {
+      "Warn": 65,
+      "Crit": 85
+    },
+    "Temp": {
+      "Warn": 50,
+      "Crit": 70
+    },
+    "Vram": {
+      "Warn": 65,
+      "Crit": 85
+    },
+    "Mem": {
+      "Warn": 65,
+      "Crit": 85
+    },
+    "NetKBps": {
+      "Warn": 2097152,
+      "Crit": 8388608
+    }
+  },
+  "Color": {
+    "Background": "#3C3C3C",
+    "TextTitle": "#FFFFFF",
+    "TextGroup": "#DDDDDD",
+    "TextPrimary": "#FFFFFF",
+    "ValueSafe": "#66FF99",
+    "ValueWarn": "#FFD666",
+    "ValueCrit": "#FF6666",
+    "BarBackground": "#202020",
+    "BarLow": "#66FF99",
+    "BarMid": "#FFD666",
+    "BarHigh": "#FF6666",
+    "GroupBackground": "#2E2E2E"
+  }
+}

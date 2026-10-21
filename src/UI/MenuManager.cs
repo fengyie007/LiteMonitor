@@ -235,7 +235,7 @@ namespace LiteMonitor
 
             // === 界面宽度 ===
             var widthRoot = new ToolStripMenuItem(LanguageManager.T("Menu.Width"));
-            int[] presetWidths = { 180, 200, 220, 240, 260, 280, 300, 360, 420, 480, 540, 600, 660, 720, 780, 840, 900, 960, 1020, 1080, 1140, 1200 };
+            int[] presetWidths = {120, 150, 180, 200, 220, 240, 260, 280, 300, 360, 420, 480, 540, 600, 660, 720, 780, 840, 900, 960, 1020, 1080, 1140, 1200 };
             int currentW = cfg.PanelWidth;
 
             // [Optimization] Shared handler

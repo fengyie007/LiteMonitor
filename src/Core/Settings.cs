@@ -70,8 +70,6 @@ namespace LiteMonitor
         public int TaskbarVerticalPadding { get; set; } = DEFAULT_TB_VOFF;  // 垂直方向的微调/行间距
         
         // ★★★ [新增] 横条/桌面模式 间距配置 ★★★
-        public int HorizontalItemSpacing { get; set; } = 12;  // 组间距 (默认 12)
-        public int HorizontalInnerSpacing { get; set; } = 8;  // 标签与值间距 (默认 8)
         public bool HorizontalSingleLine { get; set; } = false; // [新增] 横条模式单行显示
 
         // ★★★ 常量定义：用于 GetStyle 中的默认策略 ★★★

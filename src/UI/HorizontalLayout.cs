@@ -93,9 +93,10 @@ namespace LiteMonitor
             }
 
 
-             // 组间距逻辑
-            int gapBase = (_mode == LayoutMode.Taskbar) ? s.Gap : _settings.HorizontalItemSpacing; 
-            int gap = (int)Math.Round(gapBase * dpi); 
+             // 组间距：任务栏用任务栏样式 Gap；横屏读主题 GroupSpacing（主题值已含 DPI×UIScale）
+            int gap = (_mode == LayoutMode.Taskbar)
+                ? (int)Math.Round(s.Gap * dpi)
+                : _t.Layout.GroupSpacing;
 
             if (cols.Count > 1) totalWidth += (cols.Count - 1) * gap;
             PanelWidth = totalWidth;
@@ -231,7 +232,7 @@ namespace LiteMonitor
                     if (_mode == LayoutMode.Taskbar || _settings.HorizontalFollowsTaskbar)
                         paddingX = (int)Math.Round(s.Inner * dpi);
                     else
-                        paddingX = (int)Math.Round(_settings.HorizontalInnerSpacing * dpi);
+                        paddingX = _t.Layout.GroupPadding; // 横屏标签↔值间距，读主题（已含 DPI×UIScale）
 
                     return wLabel + wValue + paddingX;
                 }

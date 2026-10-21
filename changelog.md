@@ -1,5 +1,31 @@
 # Changelog
 
+## 2026-10-21
+
+### refactor: 横屏间距与 Win11 圆角改为由主题配置驱动
+
+**背景：**
+1. 横屏模式下「组间距」与「标签↔值间距」原先硬编码读取设置项 `HorizontalItemSpacing` / `HorizontalInnerSpacing`，主题里的 `GroupSpacing` / `GroupPadding` 在横屏下完全不生效
+2. Win11 下窗口圆角写死为 DWM 默认圆角，主题 `CornerRadius` 被忽略，无法通过主题关闭或调小
+
+**修改方案：**
+- 横屏「组间距」改为读取主题 `Layout.GroupSpacing`（`HorizontalLayout.cs`）
+- 横屏「标签↔值间距」改为读取主题 `Layout.GroupPadding`（`HorizontalLayout.cs`）
+- Win11 圆角按主题 `Layout.CornerRadius` 映射 DWM 策略：`0 → 不圆角`、`≤6 → 小圆角`、`>6 → 默认圆角`（`MainFormWinHelper.cs`）
+- 移除已失效的设置项 `HorizontalItemSpacing`、`HorizontalInnerSpacing` 及其设置界面入口
+
+**修改文件：**
+- `src/UI/HorizontalLayout.cs` — 横屏组间距 / 标签↔值间距改读主题
+- `src/UI/Helpers/MainFormWinHelper.cs` — Win11 圆角改读主题，新增 `DWMWCP_DONOTROUND` / `DWMWCP_ROUNDSMALL` 常量
+- `src/Core/Settings.cs` — 移除 `HorizontalItemSpacing`、`HorizontalInnerSpacing`
+- `src/UI/Settings/MainPanelPage.cs` — 移除横屏间距设置入口
+- `resources/themes/my.json` — 自定义主题紧凑化（缩小行高、内边距、字号与圆角）
+
+**其它：**
+- 主面板宽度预设新增 `120` / `150` 选项（`src/UI/MenuManager.cs`）
+
+**注意：** 主题布局值运行时会乘 `DPI × UIScale`。内置主题 `GroupSpacing` 默认 `30`、`CornerRadius` 默认 `12`，横屏间距与 Win11 圆角会随之变化，可按需调小。
+
 ## 2026-03-22
 
 ### fix: 修复置顶在虚拟桌面切换和全屏应用中失效的问题

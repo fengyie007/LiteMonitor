@@ -146,7 +146,11 @@ namespace LiteMonitor.src.UI.Helpers
                 if (isWin11)
                 {
                     _form.Region = null;
-                    int preference = DWMWCP_ROUND;
+                    // 圆角交给主题 CornerRadius 控制（主题值已含 DPI×UIScale）
+                    int r = Math.Max(0, ThemeManager.Current.Layout.CornerRadius);
+                    int preference = r <= 0 ? DWMWCP_DONOTROUND
+                                   : r <= 6 ? DWMWCP_ROUNDSMALL
+                                   : DWMWCP_ROUND;
                     DwmSetWindowAttribute(_form.Handle, DWMWA_WINDOW_CORNER_PREFERENCE, ref preference, sizeof(int));
                     int borderColor = DWMWA_COLOR_NONE;
                     DwmSetWindowAttribute(_form.Handle, DWMWA_BORDER_COLOR, ref borderColor, sizeof(int));
@@ -225,7 +229,9 @@ namespace LiteMonitor.src.UI.Helpers
         private const uint SWP_NOACTIVATE = 0x0010;
         private const uint SWP_NOOWNERZORDER = 0x0200;
         private const int DWMWA_WINDOW_CORNER_PREFERENCE = 33;
+        private const int DWMWCP_DONOTROUND = 1;
         private const int DWMWCP_ROUND = 2;
+        private const int DWMWCP_ROUNDSMALL = 3;
         private const int DWMWA_BORDER_COLOR = 34;
         private const int DWMWA_COLOR_NONE = unchecked((int)0xFFFFFFFE);
         private const int GWL_EXSTYLE = -20;
